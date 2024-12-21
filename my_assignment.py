@@ -163,7 +163,7 @@ def extract_product_details_from_page(product_url):
         except Exception:
             product_details['Images'] = []
 
-        logging.info(f"Details extracted: {product_details}")
+        #logging.info(f"Details extracted: {product_details}")
     except Exception as e:
         logging.error(f"Error extracting product details from page: {e}")
     return product_details
