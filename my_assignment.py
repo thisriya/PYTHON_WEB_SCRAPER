@@ -14,15 +14,14 @@ import time
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Chrome driver setup
-driver_path = r"C:\Windows\chromedriver.exe"
+driver_path = r"C:\Windows\chromedriver.exe" #You need to give the path of the location where the chromedriver/webdriver is saved in your pc
 service = Service(driver_path)
 chrome_options = webdriver.ChromeOptions()
 chrome_options.add_argument("--ignore-certificate-errors")  # Ignore SSL errors
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
 def amazon_login(email, password):
-    """Login to Amazon account."""
-    time.sleep(20)
+    time.sleep(10)
     logging.info("Attempting to login to Amazon...")
     driver.get("https://www.amazon.com/ap/signin?openid.pape.max_auth_age=0&openid.return_to=https%3A%2F%2Fwww.amazon.com%2F%3Fref_%3Dnav_ya_signin&openid.identity=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.assoc_handle=usflex&openid.mode=checkid_setup&openid.claimed_id=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0%2Fidentifier_select&openid.ns=http%3A%2F%2Fspecs.openid.net%2Fauth%2F2.0")
     try:
@@ -56,7 +55,6 @@ def amazon_login(email, password):
         return False
 
 def go_to_category(category_url):
-    """Navigate to the specified category."""
     logging.info(f"Navigating to category: {category_url}")
     driver.get(category_url)
     try:
@@ -66,28 +64,20 @@ def go_to_category(category_url):
         )
         logging.info("Category page loaded.")
 
-        # Capture screenshot and save page source for debugging
-        # driver.save_screenshot("bestsellers_page.png")
-        # with open("page_source.html", "w", encoding="utf-8") as f:
-        #     f.write(driver.page_source)
-
         # Scroll to the bottom
         driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
         time.sleep(5)
 
     except Exception as e:
         logging.error(f"Error loading category page: {e}")
-        driver.save_screenshot("error_screenshot.png")  # Capture a screenshot for debugging
         raise
 
 
 
 def extract_product_links():
-    """Extract product links from the category page."""
     logging.info("Extracting product links...")
     product_links = []
     try:
-        # Locate product items and extract their links
         products_elements= driver.find_elements(By.CSS_SELECTOR, "a.a-link-normal.aok-block ")
         product_links = [product.get_attribute("href") for product in products_elements if product.get_attribute("href")]
         logging.info(f"Found {len(product_links)} product links.")
@@ -100,7 +90,6 @@ def extract_product_links():
 
 
 def extract_product_details_from_page(product_url):
-    """Extract detailed product information from the product page."""
     logging.info(f"Extracting details for product: {product_url}")
     driver.get(product_url)
     time.sleep(3)  # Allow the page to load
@@ -182,7 +171,6 @@ def extract_product_details_from_page(product_url):
 
 
 def process_all_categories(category_urls):
-    """Process all categories and extract product details."""
     all_products = []
     for idx, category_url in enumerate(category_urls, start=1):
         logging.info(f"Processing category {idx}/{len(category_urls)}: {category_url}")
@@ -210,23 +198,7 @@ def process_all_categories(category_urls):
     return all_products
 
 
-
-def save_to_csv(products):
-    """Save products to a CSV file."""
-    logging.info("Saving products to CSV file...")
-    try:
-        keys = products[0].keys() if products else ['Product Name', 'Price', 'Rating','Category']
-        with open('amazon_products.csv', 'w', newline='', encoding='utf-8') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=keys)
-            writer.writeheader()
-            writer.writerows(products)
-        logging.info("Data saved to amazon_products.csv.")
-    except Exception as e:
-        logging.error(f"Error saving to CSV: {e}")
-
-
 def save_to_json(products):
-    """Save products to a JSON file."""
     logging.info("Saving products to JSON file...")
     try:
         with open('amazon_products.json', 'w', encoding='utf-8') as f:
@@ -238,7 +210,7 @@ def save_to_json(products):
 
 # Main flow
 try:
-    if amazon_login("example@gmail.com", "*****"):
+    if amazon_login("example@gmail.com", "*****"): #Replace the email and password with your correct amazon credentials
         category_urls = [
             "https://www.amazon.in/gp/bestsellers/shoes/ref=zg_bs_nav_shoes_0",
             "https://www.amazon.in/gp/bestsellers/electronics/ref=zg_bs_nav_electronics_0",
