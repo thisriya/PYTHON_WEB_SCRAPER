@@ -238,7 +238,7 @@ def save_to_json(products):
 
 # Main flow
 try:
-    if amazon_login("singh.sandhya1979s@gmail.com", "sandhya123"):
+    if amazon_login("example@gmail.com", "*****"):
         category_urls = [
             "https://www.amazon.in/gp/bestsellers/shoes/ref=zg_bs_nav_shoes_0",
             "https://www.amazon.in/gp/bestsellers/electronics/ref=zg_bs_nav_electronics_0",
